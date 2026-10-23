@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Droplets, Flame, Target, Weight } from "lucide-react";
-import { api } from "../lib/api";
+import { api, getApiErrorMessage } from "../lib/api";
 
 export default function DashboardPage() {
   const [workout, setWorkout] = useState(null);
@@ -20,7 +20,7 @@ export default function DashboardPage() {
         setDiet(d.data);
         setLogs(l.data);
       } catch (loadError) {
-        setError(loadError.response?.data?.message || "Unable to load your dashboard right now.");
+        setError(getApiErrorMessage(loadError, "Unable to load your dashboard right now."));
       } finally {
         setLoading(false);
       }
@@ -42,7 +42,7 @@ export default function DashboardPage() {
       const refreshed = await api.get("/tracking/logs");
       setLogs(refreshed.data);
     } catch (saveError) {
-      setError(saveError.response?.data?.message || "Failed to save today's progress.");
+      setError(getApiErrorMessage(saveError, "Failed to save today's progress."));
     }
   };
 

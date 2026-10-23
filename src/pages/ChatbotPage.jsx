@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api } from "../lib/api";
+import { api, getApiErrorMessage } from "../lib/api";
 
 export default function ChatbotPage() {
   const [messages, setMessages] = useState([
@@ -18,8 +18,11 @@ export default function ChatbotPage() {
     try {
       const { data } = await api.post("/chat", { message: userMessage.content });
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
-    } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Unable to fetch response right now." }]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: getApiErrorMessage(error, "Unable to fetch response right now.") }
+      ]);
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../lib/api";
+import { api, getApiErrorMessage } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 
 const defaultForm = {
@@ -22,6 +22,7 @@ export default function OnboardingPage() {
   const [form, setForm] = useState(defaultForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const submitting = useRef(false);
   const navigate = useNavigate();
   const { completeOnboarding } = useAuth();
 
@@ -29,6 +30,8 @@ export default function OnboardingPage() {
 
   const submit = async (e) => {
     e.preventDefault();
+    if (submitting.current) return;
+    submitting.current = true;
     setError("");
     setLoading(true);
     try {
@@ -42,11 +45,9 @@ export default function OnboardingPage() {
       completeOnboarding(data);
       navigate("/dashboard");
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to create profile. Check the API base URL, backend deployment, and CORS settings."
-      );
+      setError(getApiErrorMessage(err, "Failed to create profile."));
     } finally {
+      submitting.current = false;
       setLoading(false);
     }
   };

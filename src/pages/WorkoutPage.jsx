@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, CalendarDays, Dumbbell, Flame, HeartPulse, RefreshCw, Target } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { getApiErrorMessage } from "../lib/api";
 import WorkoutActions from "../components/workout/WorkoutActions";
 import WorkoutDayCard from "../components/workout/WorkoutDayCard";
 import WorkoutSummaryCard from "../components/workout/WorkoutSummaryCard";
@@ -21,7 +22,7 @@ export default function WorkoutPage() {
       const data = await fetchWorkoutPlan();
       setPlan(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to load your workout plan right now.");
+      setError(getApiErrorMessage(err, "Unable to load your workout plan right now."));
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ export default function WorkoutPage() {
       setOpenDay(0);
       await refreshUser?.();
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to generate a new workout plan.");
+      setError(getApiErrorMessage(err, "Unable to generate a new workout plan."));
     } finally {
       setActionLoading(false);
     }

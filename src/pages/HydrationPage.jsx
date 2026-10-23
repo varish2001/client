@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../lib/api";
+import { api, getApiErrorMessage } from "../lib/api";
 
 export default function HydrationPage() {
   const [diet, setDiet] = useState(null);
@@ -14,7 +14,7 @@ export default function HydrationPage() {
       setDiet(d.data);
       setTodayLog(logs.data[logs.data.length - 1] || { waterIntakeMl: 0 });
     } catch (loadError) {
-      setError(loadError.response?.data?.message || "Unable to load hydration data.");
+      setError(getApiErrorMessage(loadError, "Unable to load hydration data."));
     } finally {
       setLoading(false);
     }
@@ -30,7 +30,7 @@ export default function HydrationPage() {
       const { data } = await api.post("/tracking/water", { amountMl });
       setTodayLog(data);
     } catch (saveError) {
-      setError(saveError.response?.data?.message || "Unable to update water intake.");
+      setError(getApiErrorMessage(saveError, "Unable to update water intake."));
     }
   };
 

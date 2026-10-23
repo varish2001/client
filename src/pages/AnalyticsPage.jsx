@@ -10,7 +10,7 @@ import {
   BarChart,
   Bar
 } from "recharts";
-import { api } from "../lib/api";
+import { api, getApiErrorMessage } from "../lib/api";
 
 export default function AnalyticsPage() {
   const [logs, setLogs] = useState([]);
@@ -22,7 +22,7 @@ export default function AnalyticsPage() {
       .get("/tracking/logs")
       .then(({ data }) => setLogs(data))
       .catch((loadError) => {
-        setError(loadError.response?.data?.message || "Unable to load analytics.");
+        setError(getApiErrorMessage(loadError, "Unable to load analytics."));
       })
       .finally(() => {
         setLoading(false);

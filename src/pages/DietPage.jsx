@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, Droplets, Flame, RefreshCw, Sparkles } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { fetchDietPlan, regenerateDietPlan } from "../lib/diet";
+import { getApiErrorMessage } from "../lib/api";
 import MacroBreakdownCard from "../components/diet/MacroBreakdownCard";
 import DietSummaryCard from "../components/diet/DietSummaryCard";
 import MealSlotCard from "../components/diet/MealSlotCard";
@@ -23,7 +24,7 @@ export default function DietPage() {
       const data = await fetchDietPlan(user);
       setPlan(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to load your personalized diet plan right now.");
+      setError(getApiErrorMessage(err, "Unable to load your personalized diet plan right now."));
     } finally {
       setLoading(false);
     }
@@ -49,7 +50,7 @@ export default function DietPage() {
       const nextPlan = await regenerateDietPlan();
       setPlan(nextPlan);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to regenerate your diet plan.");
+      setError(getApiErrorMessage(err, "Failed to regenerate your diet plan."));
     } finally {
       setRegenerating(false);
     }
