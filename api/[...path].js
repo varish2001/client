@@ -1,8 +1,12 @@
 const BACKEND_URL = "https://server-5yzz.onrender.com";
 
 export default async function handler(request, response) {
-  const path = request.url.replace(/^\/api/, "");
-  const backendUrl = `${BACKEND_URL}/api${path}`;
+  const requestUrl = request.url || "";
+  const queryIndex = requestUrl.indexOf("?");
+  const pathname = queryIndex === -1 ? requestUrl : requestUrl.slice(0, queryIndex);
+  const query = queryIndex === -1 ? "" : requestUrl.slice(queryIndex);
+  const path = pathname.replace(/^\/api/, "");
+  const backendUrl = `${BACKEND_URL}/api${path}${query}`;
   const headers = new Headers();
 
   for (const [name, value] of Object.entries(request.headers)) {
@@ -23,7 +27,7 @@ export default async function handler(request, response) {
     const data = Buffer.from(await upstream.arrayBuffer());
 
     upstream.headers.forEach((value, name) => {
-      if (!["content-length", "transfer-encoding"].includes(name.toLowerCase())) {
+      if (!["content-length", "content-encoding", "transfer-encoding"].includes(name.toLowerCase())) {
         response.setHeader(name, value);
       }
     });
