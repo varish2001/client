@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function LandingPage() {
+  const { user } = useAuth();
+
   return (
     <section className="grid min-h-[80vh] items-center gap-8 md:grid-cols-2">
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
@@ -14,12 +17,22 @@ export default function LandingPage() {
         <p className="mt-4 text-slate">
           Personalized workouts, nutrition plans, hydration tracking, posture feedback, and an AI coach in one web app.
         </p>
-        <Link
-          to="/get-started"
-          className="mt-8 inline-flex rounded-xl bg-coral px-6 py-3 font-semibold text-white shadow-glow transition hover:scale-[1.02]"
-        >
-          Get Started
-        </Link>
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          <Link
+            to={user ? "/dashboard" : "/get-started"}
+            className="inline-flex rounded-xl bg-coral px-6 py-3 font-semibold text-white shadow-glow transition hover:scale-[1.02]"
+          >
+            {user ? "Go to Dashboard" : "Get Started"}
+          </Link>
+          {!user && (
+            <Link
+              to="/login"
+              className="inline-flex rounded-xl border border-slate/20 bg-white px-6 py-3 font-semibold text-slate transition hover:bg-slate/5"
+            >
+              Sign In
+            </Link>
+          )}
+        </div>
       </motion.div>
       <motion.div
         initial={{ opacity: 0, scale: 0.92 }}

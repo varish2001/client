@@ -20,6 +20,7 @@ export default function Navbar() {
         <Link to="/" className="text-lg font-bold text-ink">
           AI Virtual Gym Trainer
         </Link>
+
         {user && (
           <div className="hidden gap-3 md:flex">
             {links.map((link) => (
@@ -35,14 +36,37 @@ export default function Navbar() {
             ))}
           </div>
         )}
-        {user && (
-          <button
-            onClick={logout}
-            className="rounded-lg border border-slate px-3 py-2 text-sm text-slate hover:bg-slate hover:text-white"
-          >
-            Logout
-          </button>
-        )}
+
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <span className="hidden text-sm font-medium text-slate sm:inline">
+                {user.name || user.email || "Athlete"}
+              </span>
+              <button
+                onClick={logout}
+                className="rounded-lg border border-slate px-3 py-2 text-sm text-slate hover:bg-slate hover:text-white"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-slate hover:bg-white"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="rounded-lg bg-coral px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:scale-[1.02]"
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

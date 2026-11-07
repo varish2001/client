@@ -3,8 +3,11 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Shell from "./components/Shell";
+
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const OnboardingPage = lazy(() => import("./pages/OnboardingPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const WorkoutPage = lazy(() => import("./pages/WorkoutPage"));
 const DietPage = lazy(() => import("./pages/DietPage"));
@@ -25,6 +28,8 @@ function AppRoutes() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<HomeRedirect />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/get-started" element={<OnboardingPage />} />
           <Route
             path="/dashboard"

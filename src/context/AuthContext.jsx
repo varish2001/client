@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
       const { data } = await api.get("/users/me");
       setUser(data);
     } catch {
+      localStorage.removeItem("fit_token");
       setUser(null);
     } finally {
       setLoading(false);
@@ -23,8 +24,22 @@ export const AuthProvider = ({ children }) => {
     else setLoading(false);
   }, []);
 
+  const login = async (email, password) => {
+    const { data } = await api.post("/users/login", { email, password });
+    if (data.token) localStorage.setItem("fit_token", data.token);
+    setUser(data.user);
+    return data;
+  };
+
+  const register = async (name, email, password) => {
+    const { data } = await api.post("/users/register", { name, email, password });
+    if (data.token) localStorage.setItem("fit_token", data.token);
+    setUser(data.user);
+    return data;
+  };
+
   const completeOnboarding = ({ token, user: nextUser }) => {
-    localStorage.setItem("fit_token", token);
+    if (token) localStorage.setItem("fit_token", token);
     setUser(nextUser);
   };
 
@@ -34,7 +49,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, completeOnboarding, logout, refreshUser: fetchMe }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        completeOnboarding,
+        logout,
+        refreshUser: fetchMe
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
